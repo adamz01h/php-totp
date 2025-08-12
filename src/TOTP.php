@@ -34,6 +34,7 @@ class TOTP
 
     public static function base32Decode($in)
     {
+        $out = '';
         if (empty($in)) {
             return '';
         }
@@ -108,6 +109,7 @@ class TOTP
 
     public static function genSecret($length = 32)
     {
+        $secret = '';
         if ($length < 16 || 0 != $length % 8) {
             throw new \Exception('length must >= 16 || %8==0');
         }
@@ -131,8 +133,11 @@ class TOTP
         if (false !== mb_strpos($account.$issuer, ':')) {
             throw new \Exception('cannot have colon in account / issuer');
         }
+       
         $account = rawurlencode($account);
-        $issuer = rawurlencode($issuer);
+        if($issuer){
+            $issuer = rawurlencode($issuer);
+        }
         $label = empty($issuer) ? $account : "{$issuer}:{$account}";
 
         return 'otpauth://totp/'.$label."?secret={$secret}".
